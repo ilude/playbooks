@@ -1,0 +1,5 @@
+[docker_virtual_machines]
+rearden.ilude.com ansible_user=mike
+
+[proxmox_servers]
+pve.ilude.com ansible_user=root

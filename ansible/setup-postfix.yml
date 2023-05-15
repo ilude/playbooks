@@ -1,0 +1,10 @@
+---
+- hosts: proxmox_servers
+  roles:
+    - oefenweb.postfix
+  vars:
+    postfix_aliases:
+      - user: root
+        alias: discordalerts2023@ilude.com
+    postfix_relayhost: mailhog.ilude.com
+    postfix_relayhost_port: 1025
