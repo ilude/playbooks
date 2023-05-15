@@ -1,0 +1,9 @@
+---
+# ansible-playbook -i inventory setup-tailscale.yml
+# https://galaxy.ansible.com/artis3n/tailscale
+- name: setup tailscale
+  hosts: all
+  roles:
+    - role: artis3n.tailscale
+      vars:
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"

@@ -1,4 +1,7 @@
 ---
+# ansible-playbook -i inventory setup-postfix.yml
+# https://galaxy.ansible.com/oefenweb/postfix
+- name: setup postfix on proxmox
 - hosts: proxmox_servers
   roles:
     - oefenweb.postfix
