@@ -11,5 +11,5 @@ requirements:
 echo:
 	env|sort
 
-%:
+%: requirements
 	ansible-playbook -i inventory $@.yml

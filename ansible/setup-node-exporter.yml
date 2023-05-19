@@ -1,0 +1,5 @@
+---
+- hosts: npi_docker_hosts
+  become: true
+  roles:
+    - geerlingguy.node_exporter 

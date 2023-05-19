@@ -3,3 +3,6 @@ rearden.ilude.com ansible_user=mike
 
 [proxmox_servers]
 pve.ilude.com ansible_user=root
+
+[npi_docker_hosts]
+harbor-norad ansible_user=vagrant
