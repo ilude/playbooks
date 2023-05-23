@@ -5,4 +5,10 @@ rearden.ilude.com ansible_user=mike
 pve.ilude.com ansible_user=root
 
 [npi_docker_hosts]
-harbor-norad ansible_user=vagrant
+harbor-norad.rammount.com ansible_user=vagrant
+harbor-sentry.rammount.com ansible_user=vagrant
+
+[npi_manual_setup]
+harbor-seattle.rammount.com ansible_user=vagrant
+harbor-pharis.rammount.com ansible_user=vagrant
+monitor.rammount.com ansible_user=vagrant
