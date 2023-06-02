@@ -7,9 +7,16 @@ PASSED_COMMAND := $(firstword $(MAKECMDGOALS))
 
 requirements:
 	ansible-galaxy install -r requirements.yml
+	pip install passlib
+
+inventory:
+	ansible-playbook -i inventory update-known-hosts.yml
 
 echo:
 	env|sort
 
-%: requirements
-	ansible-playbook -i inventory $@.yml
+sudo: requirements inventory
+	ansible-playbook -i inventory --ask-become-pass setup-sudoers.yml
+
+%.yml: requirements inventory
+	ansible-playbook -i inventory $@
