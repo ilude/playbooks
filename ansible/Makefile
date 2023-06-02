@@ -9,6 +9,7 @@ requirements:
 	ansible-galaxy install -r requirements.yml
 	pip install passlib
 
+.PHONY: inventory
 inventory:
 	ansible-playbook -i inventory update-known-hosts.yml
 

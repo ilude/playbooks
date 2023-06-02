@@ -1,0 +1,23 @@
+---
+- name: Ansible apt module 
+  hosts: npi_gluster_hosts
+  become: yes
+  tasks:
+  - name: Ansible Update Cache and Upgrade all Packages
+    register: updatesys
+    apt:
+      name: "*"
+      state: latest
+      update_cache: yes
+
+  - name: Display the last line of the previous task to check the stats
+    debug:
+      msg:  "{{updatesys.stdout_lines|last}}"
+
+  - name: Remove useless packages from the cache
+    apt:
+      autoclean: yes
+
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes

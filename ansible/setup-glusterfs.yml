@@ -1,0 +1,19 @@
+---
+- name: Ansible apt module 
+  hosts: npi_gluster_hosts
+  become: yes
+  tasks:
+  - name: Ansible apt to install multiple packages - GlusterFS
+    register: updatesys
+    apt:
+      update_cache: yes
+      name:
+        - glusterfs-server
+      state: present
+
+  - name: Enable glusterfs service
+    systemd:
+      name: glusterfs.service
+      enabled: true
+      started: true
+      masked: no

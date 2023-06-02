@@ -15,7 +15,7 @@ monitor.rammount.com ansible_user=vagrant
 
 
 [npi_gluster_hosts]
-192.168.30.44 ansible_user=vagrant
-192.168.30.45 ansible_user=vagrant
+gluster-monitor-ce.rammount.com ansible_user=vagrant
+gluster-monitor-cw.rammount.com ansible_user=vagrant
 harbor-norad.rammount.com ansible_user=vagrant
 harbor-sentry.rammount.com ansible_user=vagrant
