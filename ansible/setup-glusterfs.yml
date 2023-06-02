@@ -10,10 +10,38 @@
       name:
         - glusterfs-server
       state: present
+  
+  - name: Start glusterfs service
+    systemd:
+      name: glusterd
+      state: started
 
   - name: Enable glusterfs service
     systemd:
-      name: glusterfs.service
+      name: glusterd
       enabled: true
-      started: true
       masked: no
+  
+  - name: Creates /var/glusterfs/monitoring directory
+    file:
+      path: /var/glusterfs/monitoring
+      state: directory
+
+  - name: Creates /var/glusterfs/monitoring directory
+    file:
+      path: /mnt/monitoring
+      state: directory
+
+  - name: "Add mount to /etc/fstab"
+    lineinfile:
+      path: '/etc/fstab'
+      line: "localhost:/monitoring /mnt/monitoring glusterfs defaults,_netdev 0 0"
+
+# sudo gluster volume create monitoring  replica 2 arbiter 1 harbor-norad.rammount.com:/var/glusterfs/monitoring harbor-sentry.rammount.com:/var/glusterfs/monitoring gluster-monitor-ce.rammount.com:/var/glusterfs/monitoring
+# sudo gluster volume set monitoring storage.owner-gid 1000
+# sudo gluster volume set monitoring storage.owner-uid 1000
+# sudo gluster volume start monitoring
+# sudo gluster volume status
+# sudo gluster volume info monitoring
+# sudo mount -a
+# df -Th

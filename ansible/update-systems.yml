@@ -3,12 +3,27 @@
   hosts: npi_gluster_hosts
   become: yes
   tasks:
-  - name: Ansible Update Cache and Upgrade all Packages
+  - name: Creating /etc/apt/apt.conf.d/99-Phased-Updates
+    copy:
+      dest: "/etc/apt/apt.conf.d/99-Phased-Updates"
+      content: |
+        Update-Manager::Always-Include-Phased-Updates "1";
+        APT::Get::Always-Include-Phased-Updates "1";
+
+  - name: Update apt repo and cache on all Debian/Ubuntu boxes
+    apt: 
+      update_cache: yes
+      cache_valid_time: 3600
+  
+  - name: Full-Upgrade on servers
+    apt: 
+      upgrade: dist 
+
+  - name: Upgrade all Packages
     register: updatesys
     apt:
       name: "*"
       state: latest
-      update_cache: yes
 
   - name: Display the last line of the previous task to check the stats
     debug:
