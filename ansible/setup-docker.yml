@@ -1,5 +1,5 @@
 ---
-- hosts: npi_docker_hosts
+- hosts: proxmox_template
   become: true
   vars:
     docker_edition: 'ce'
@@ -14,3 +14,6 @@
     - "{{ ansible_env.SUDO_USER }}"
   roles:
     - geerlingguy.docker
+  tasks:
+    - name: add a vm.overcommit_memory setting at the end of the sysctl.conf
+      sysctl: name=vm.overcommit_memory value=1 state=present reload=yes

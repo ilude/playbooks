@@ -1,9 +1,0 @@
----
-- name: ensure app/deploy public key is present on git server
-  hosts: npi_docker_hosts
-  tasks:
-  - name: ensure private key is present
-    copy: 
-      src: /home/{{ lookup('env', 'USER') }}/.ssh/id_ed25519
-      dest: /home/{{ ansible_user }}/.ssh/id_ed25519
-      mode: 0600

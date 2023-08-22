@@ -1,6 +1,6 @@
 ---
 - name: disable esm login nag message
-  hosts: npi_docker_hosts
+  hosts: proxmox_template
   become: true
   tasks:
   - name: Creates directory /etc/apt/apt.conf.d/off
@@ -9,7 +9,7 @@
       state: absent
 
 
-  - name: Ansible remove file glob
+  - name: Ansible remove esm files
     file:
       path: "{{ item }}"
       state: absent

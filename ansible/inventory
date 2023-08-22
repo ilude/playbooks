@@ -1,12 +1,32 @@
-[docker_virtual_machines]
-rearden.ilude.com ansible_user=mike
+; [docker_virtual_machines]
+; rearden.ilude.com ansible_user=mike
 
-[proxmox_servers]
-pve.ilude.com ansible_user=root
+; [proxmox_servers]
+; pve.ilude.com ansible_user=root
 
-[npi_docker_hosts]
+[npi_cluster_test]
+harbor-quorum.rammount.com ansible_user=vagrant
 harbor-norad.rammount.com ansible_user=vagrant
 harbor-sentry.rammount.com ansible_user=vagrant
+
+[proxmox_quorum_hosts]
+192.168.30.23 ansible_user=vagrant
+
+
+[proxmox_template]
+192.168.30.31 ansible_user=anvil
+192.168.30.32 ansible_user=anvil
+192.168.30.33 ansible_user=anvil
+192.168.30.34 ansible_user=anvil
+192.168.30.35 ansible_user=anvil
+192.168.30.36 ansible_user=anvil
+
+[npi_docker_hosts]
+gluster-monitor-cw.rammount.com ansible_user=vagrant
+harbor-quorum.rammount.com ansible_user=vagrant
+harbor-norad.rammount.com ansible_user=vagrant
+harbor-sentry.rammount.com ansible_user=vagran
+
 
 [npi_manual_setup]
 harbor-seattle.rammount.com ansible_user=vagrant

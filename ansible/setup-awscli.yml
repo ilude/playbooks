@@ -1,0 +1,3 @@
+- hosts: npi_cluster_test
+  roles:
+    - ecgalaxy.aws_cli
