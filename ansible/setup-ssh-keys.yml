@@ -9,5 +9,5 @@
     #     mode: 0600
 
     - copy:
-        src: ./keys/npi-pub.keys
+        src: ./keys/npi-pub.keys.txt
         dest: /home/vagrant/.ssh/authorized_keys
