@@ -6,10 +6,10 @@
   tasks:
   - name: ensure github.com is a known host
     lineinfile:
-      dest: /root/.ssh/known_hosts
+      dest: ~/.ssh/known_hosts
       create: yes
       state: present
-      line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+      line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com 2>/dev/null') }}"
       regexp: "^github\\.com"
   - name: clone dotfiles repository
     git:

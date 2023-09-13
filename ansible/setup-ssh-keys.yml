@@ -41,4 +41,12 @@
         state:  link
         mode:   0644
 
+    - name: check if server is proxmox server
+      shell: pveversion --verbose | grep proxmox-ve | wc -l
+      register: is_proxmox
+
+    - name: update certs on proxmox servers
+      shell: pvecm updatecerts
+      when: is_proxmox.stdout == "1"
+
     

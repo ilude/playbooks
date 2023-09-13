@@ -7,3 +7,10 @@ pve-cicero.rammount.com
 pve-remus.rammount.com
 pve-romulus.rammount.com
 pve-zeno.rammount.com
+
+[docker_hosts:vars]
+ansible_user=anvil
+;ansible_ssh_pass=
+
+[docker_hosts]
+192.168.31.98 
