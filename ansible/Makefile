@@ -3,21 +3,30 @@ ifneq (,$(wildcard /app/.devcontainer/.env))
     export
 endif
 
+ifeq ($(SITE),)
+    $(error Need a value for SITE, e.g., export SITE=value)
+endif
+
+export ANSIBLE_HOST_KEY_CHECKING=false
+
 PASSED_COMMAND := $(firstword $(MAKECMDGOALS))
 
-requirements:
+.PHONY: prereq inventory %.yml 
+
+prereq: 
 	ansible-galaxy install -r requirements.yml
 	pip install passlib
 
-.PHONY: inventory
 inventory:
-	ansible-playbook -i inventory update-known-hosts.yml
+	ansible-playbook -i inventory.$(SITE) update-known-hosts.yml
 
 echo:
 	env|sort
 
-sudo: requirements inventory
-	ansible-playbook -i inventory --ask-become-pass setup-sudoers.yml
+sudo: prereq
+	ansible-playbook -i inventory.$(SITE) --ask-become-pass setup-sudoers.yml
 
-%.yml: requirements inventory
-	ansible-playbook -i inventory $@
+%.yml: prereq FORCE
+	ansible-playbook -i inventory.$(SITE) $@ 
+
+FORCE: ;

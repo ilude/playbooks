@@ -1,5 +1,5 @@
 ---
-- hosts: proxmox_template
+- hosts: all
   become: true
   vars:
     docker_edition: 'ce'

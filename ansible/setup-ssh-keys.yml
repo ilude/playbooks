@@ -1,13 +1,44 @@
 ---
 - name: ensure app/deploy public key is present on git server
-  hosts: proxmox_template
+  hosts: all
+  become: false
+  gather_facts: false
+  vars:
+    - ssh_public_keys_file: "./keys/{{ lookup('env', 'SITE') }}-pub.keys.txt" 
   tasks:
-    # - name: ensure private key is present
-    #   copy: 
-    #     src: /home/{{ lookup('env', 'USER') }}/.ssh/id_ed25519
-    #     dest: /home/{{ ansible_user }}/.ssh/id_ed25519
-    #     mode: 0600
+    - name: Set up multiple authorized keys
+      authorized_key:
+        user: '{{ ansible_user }}'
+        state: present
+        key: '{{ item }}'
+      with_items: '{{ lookup("file", ssh_public_keys_file).splitlines() }}'
 
-    - copy:
-        src: ./keys/npi-pub.keys.txt
-        dest: /home/vagrant/.ssh/authorized_keys
+    - name: ensure id_ed25519 private key is present
+      copy: 
+        src:  ~/.ssh/id_ed25519_pve_deploy
+        dest: ~/.ssh/id_ed25519_pve_deploy
+        mode: 0600
+        force: no
+    
+    - name: ensure id_ed25519 public key is present
+      copy: 
+        src:  ~/.ssh/id_ed25519_pve_deploy.pub
+        dest: ~/.ssh/id_ed25519_pve_deploy.pub
+        mode: 0644
+        force: no
+
+    - name: create link to id_ed25519 private key
+      file:
+        src:    ~/.ssh/id_ed25519_pve_deploy
+        dest:   ~/.ssh/id_ed25519
+        state:  link
+        mode:   0600
+
+    - name: create link to id_ed25519 public key
+      file:
+        src:    ~/.ssh/id_ed25519_pve_deploy.pub
+        dest:   ~/.ssh/id_ed25519.pub
+        state:  link
+        mode:   0644
+
+    

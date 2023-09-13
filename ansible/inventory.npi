@@ -1,0 +1,9 @@
+[pve_cluster_rome:vars]
+ansible_user=root
+
+[pve_cluster_rome]
+pve-caesar.rammount.com
+pve-cicero.rammount.com
+pve-remus.rammount.com
+pve-romulus.rammount.com
+pve-zeno.rammount.com
