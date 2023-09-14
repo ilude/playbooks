@@ -1,0 +1,21 @@
+- name: sync rms
+  hosts: rms_backup_servers
+  gather_facts: no
+  tasks:
+    - name: install rsync package
+      become: yes
+      apt:
+        update_cache: yes
+        name:
+          - rsync
+        state: present
+    
+    - name: create /apps directory
+      become: yes
+      file:
+        path: /apps
+        state: directory        
+        owner: "{{ ansible_user | default(ansible_env.USER) }}"
+        group: "{{ ansible_user | default(ansible_env.USER) }}"
+        mode: 0775
+

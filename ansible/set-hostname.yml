@@ -1,0 +1,9 @@
+- name: set hostnames
+  hosts: rms_backup_servers
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: set system hostname
+      command: hostnamectl set-hostname {{ inventory_hostname | split('.') | first }}
+      # debug:
+      #   msg: "Host: {{ inventory_hostname | split('.') | first }}"

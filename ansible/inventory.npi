@@ -1,5 +1,9 @@
+[*:vars]
+ansible_user=anvil
+
 [pve_cluster_rome:vars]
 ansible_user=root
+;ansible_ssh_pass=
 
 [pve_cluster_rome]
 pve-caesar.rammount.com
@@ -8,9 +12,16 @@ pve-remus.rammount.com
 pve-romulus.rammount.com
 pve-zeno.rammount.com
 
-[docker_hosts:vars]
-ansible_user=anvil
-;ansible_ssh_pass=
+[rms_backup_servers]
+victor-newark.rammount.com
+victor-boston.rammount.com
+victor-philly.rammount.com
+victor-trenton.rammount.com
+victor-sentry.rammount.com
 
-[docker_hosts]
-192.168.31.98 
+[harbor_servers]
+192.168.50.229 
+
+[docker_hosts:children]
+rms_backup_servers
+harbor_servers

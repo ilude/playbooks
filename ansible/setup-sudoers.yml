@@ -1,6 +1,6 @@
 ---
 - name: setup sudoer.d file
-  hosts: proxmox_quorum_hosts
+  hosts: 192.168.50.229
   become: true
   tasks:
   - name: Set includedir in sudoers

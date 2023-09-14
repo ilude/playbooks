@@ -1,8 +1,8 @@
 ---
 - name: ensure app/deploy public key is present on git server
   hosts: all
-  become: false
-  gather_facts: false
+  become: no
+  gather_facts: no
   vars:
     - ssh_public_keys_file: "./keys/{{ lookup('env', 'SITE') }}-pub.keys.txt" 
   tasks:
