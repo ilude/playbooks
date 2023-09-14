@@ -1,6 +1,6 @@
 ---
 - name: Ansible apt module 
-  hosts: proxmox_template
+  hosts: all
   become: yes
   tasks:
   - name: Creating /etc/apt/apt.conf.d/99-Phased-Updates
