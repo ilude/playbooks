@@ -10,12 +10,15 @@
           - rsync
         state: present
     
+    - debug:
+        msg: "{{ ansible_user }}"
+    
     - name: create /apps directory
       become: yes
       file:
         path: /apps
         state: directory        
-        owner: "{{ ansible_user | default(ansible_env.USER) }}"
-        group: "{{ ansible_user | default(ansible_env.USER) }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: 0775
 

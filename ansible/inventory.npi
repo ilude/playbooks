@@ -1,4 +1,4 @@
-[*:vars]
+[all:vars]
 ansible_user=anvil
 
 [pve_cluster_rome:vars]
