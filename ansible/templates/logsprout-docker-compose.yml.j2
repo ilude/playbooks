@@ -1,0 +1,16 @@
+version: '2'
+services:
+  logspout:
+    image: gliderlabs/logspout:latest
+    container_name: logspout
+    restart: unless-stopped
+    command: syslog://{{ log_server }}:1514
+    environment:
+      - SYSLOG_HOSTNAME={{'{{'}}.ContainerName{{'}}'}}-{{ inventory_hostname | split('.') | first }}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - autoheal=true
+      - traefik.enable=false

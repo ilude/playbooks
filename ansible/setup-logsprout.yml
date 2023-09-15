@@ -1,0 +1,40 @@
+- name: setup logsprout to {{ log_server }}
+  hosts: rms_backup_servers
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: create /apps/logsprout directory
+      become: yes
+      file:
+        path: /apps/logsprout
+        state: directory        
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0775
+        recurse: yes
+
+    - name: create logsprout docker-compose.yml file
+      template:
+        src: templates/logsprout-docker-compose.yml.j2
+        dest: /apps/logsprout/docker-compose.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0644
+      register: service_conf
+
+    - name: check if logsprout is running
+      shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep logsprout | grep running | wc -l
+      register: service_count
+
+    # - name: start logsprout
+    #   shell: docker compose up -d
+    #   args:
+    #     chdir: /apps/logsprout
+    #   when: service_count.stdout == "0"
+
+    # - name: restart logsprout
+    #   shell: docker compose restart
+    #   args:
+    #     chdir: /apps/logsprout
+    #   when: service_count.stdout == "1" and service_conf.changed
+

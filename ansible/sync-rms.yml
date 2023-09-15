@@ -2,16 +2,14 @@
   hosts: rms_backup_servers
   gather_facts: no
   tasks:
-    - name: install rsync package
+    - name: install dependencies
       become: yes
       apt:
         update_cache: yes
         name:
           - rsync
+          - dnsutils
         state: present
-    
-    - debug:
-        msg: "{{ ansible_user }}"
     
     - name: create /apps directory
       become: yes
@@ -21,4 +19,23 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: 0775
+
+    - known_hosts:
+        name: "{{ item }}"
+        key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
+        state: present
+      with_items:
+      - rms.rammount.com
+      - bitbucket.org
+
+    - name: rsync from rms.rammount.com
+      shell: rsync -chazP --stats --exclude '.erlang.cookie' vagrant@rms.rammount.com:/apps/ /apps
+
+    - include_tasks: sync-rms-start-service.yml 
+      # vars:
+      #   - item: "{{item}}"
+      with_items:
+        - influx
+        - rms-production
+        - vps-production
 

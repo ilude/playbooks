@@ -1,0 +1,36 @@
+- name: setup syslog forwarding to {{ log_server }}
+  hosts: rms_backup_servers
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: install dependencies
+      become: yes
+      apt:
+        update_cache: yes
+        name:
+          - rsyslog
+        state: present
+
+    - name: Start rsyslog service
+      systemd:
+        name: rsyslog
+        state: started
+
+    - name: Enable rsyslog service
+      systemd:
+        name: rsyslog
+        enabled: true
+        masked: no
+
+    - name: create rsyslog configuration file
+      copy:
+        dest: "/etc/rsyslog.d/60-graylog.conf"
+        content: |
+          *.* @{{ log_server }}:1514;RSYSLOG_SyslogProtocol23Format
+      register: service_conf
+
+    - name: restart rsyslog service
+      service:
+        name: rsyslog
+        state: restarted
+      when: service_conf.changed

@@ -1,5 +1,6 @@
 [all:vars]
 ansible_user=anvil
+log_server=logs.rammount.com
 
 [pve_cluster_rome:vars]
 ansible_user=root
@@ -17,11 +18,15 @@ victor-newark.rammount.com
 victor-boston.rammount.com
 victor-philly.rammount.com
 victor-trenton.rammount.com
+harbor-portland.rammount.com
+
+[logging_servers]
 victor-sentry.rammount.com
 
 [harbor_servers]
-192.168.50.229 
+harbor-portland.rammount.com 
 
 [docker_hosts:children]
-rms_backup_servers
 harbor_servers
+logging_servers
+rms_backup_servers

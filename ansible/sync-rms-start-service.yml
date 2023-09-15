@@ -1,0 +1,25 @@
+    - name: check if {{ item }} is running
+      shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep {{ item }} | grep running | wc -l
+      register: service_count
+
+    - name: get branch name for {{ item }}
+      shell: git rev-parse --abbrev-ref HEAD
+      args:
+        chdir: /apps/{{ item }}
+      register: branch_name
+
+    - name: set git upstream origin/{{branch_name.stdout | trim}} for {{ item }}
+      shell: git branch --set-upstream-to=origin/{{branch_name.stdout | trim}} {{branch_name.stdout | trim}}
+      args:
+        chdir: /apps/{{ item }}
+
+    - name: git pull latest for {{ item }}
+      shell: git pull
+      args:
+        chdir: /apps/{{ item }}
+
+    - name: restart {{ item }}
+      shell: make restart production
+      args:
+        chdir: /apps/{{ item }}
+      when: service_count.stdout == "0" or item != "influx"
