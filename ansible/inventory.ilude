@@ -1,0 +1,8 @@
+[all:vars]
+ansible_user=anvil
+
+[tailscale_host]
+192.168.16.133
+
+[docker_hosts:children]
+[tailscale_host]

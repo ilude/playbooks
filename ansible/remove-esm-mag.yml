@@ -17,3 +17,29 @@
     - /etc/apt/apt.conf.d/20apt-esm-hook.conf
     - /etc/update-motd.d/88-esm-announce
     - /var/lib/ubuntu-advantage/messages/motd-esm-announce
+
+
+---
+- name: disable esm login nag message
+  hosts: proxmox_template
+  become: true
+  tasks:
+  - name: Mask these services
+    systemd:
+      name: "{{ item }}"
+      masked: yes
+    with_items:
+    - apt-news.service
+    - esm-cache.service
+
+  - name: Ansible remove esm files
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items: 
+    - /etc/apt/apt.conf.d/20apt-esm-hook.conf
+    - /etc/update-motd.d/88-esm-announce
+    - /var/lib/ubuntu-advantage/messages/motd-esm-announce
+
+  
+
