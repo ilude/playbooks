@@ -1,6 +1,6 @@
 ---
 - name: install docker and docker compose
-  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
+  hosts: docker_hosts
   become: true
   vars:
     docker_edition: 'ce'

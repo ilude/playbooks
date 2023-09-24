@@ -2,8 +2,22 @@
 # ansible-playbook -i inventory setup-tailscale.yml
 # https://galaxy.ansible.com/artis3n/tailscale
 - name: setup tailscale
-  hosts: all
+  hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}" 
   roles:
     - role: artis3n.tailscale
       vars:
         tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+        tailscale_args: 
+  tasks:
+    - ansible.posix.sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present
+      reload: yes
+      sysctl_set: true
+
+
+# echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+# echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+# sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+# sudo tailscale up --advertise-routes=192.168.16.0/24 --hostname=ilude-traefikturkey-container
