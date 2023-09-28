@@ -1,8 +1,7 @@
----
-- name: ensure id_ed25519 key is present on hosts
-  hosts: "{{ ansible_override_hosts | default('all') }}"
+- hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   vars:
     - ssh_public_keys_file: "./keys/{{ lookup('env', 'SITE') }}-pub.keys.txt"
   tasks:

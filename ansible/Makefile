@@ -20,20 +20,29 @@ $(eval $(EMPTY_TARGETS):;@:)
 
 .PHONY: prereq inventory %.yml 
 
-prereq: 
+prereq: .ansible_vault_password
 	ansible-galaxy install -r requirements.yml
 	pip install passlib
 
+.ansible_vault_password:
+	touch $@
+
 inventory:
-	ansible-playbook -i inventory.$(SITE) update-known-hosts.yml
+	ansible-playbook -i inventory.$(SITE) update-known-hosts.yml --vault-password-file .ansible_vault_password
 
 echo:
 	env|sort
 
 sudo: prereq
-	ansible-playbook -i inventory.$(SITE) --ask-become-pass setup-sudoers.yml 
+	ansible-playbook -i inventory.$(SITE) --ask-become-pass setup-sudoers.yml --vault-password-file .ansible_vault_password
+
+encrypt:
+	ansible-vault encrypt --vault-password-file .ansible_vault_password vaults/$(SITE).yml
+
+edit-vars:
+	EDITOR='nano' ansible-vault edit --vault-password-file .ansible_vault_password vaults/$(SITE).yml
 
 %.yml: prereq FORCE
-	ansible-playbook -i inventory.$(SITE) $@ --extra-vars "ansible_override_hosts=$(ANSIBLE_OVERRIDE_HOSTS)"
+	ansible-playbook -i inventory.$(SITE) $@ --extra-vars "ansible_override_hosts=$(ANSIBLE_OVERRIDE_HOSTS)" --vault-password-file .ansible_vault_password
 
 FORCE: ;

@@ -3,11 +3,12 @@
 # https://galaxy.ansible.com/oefenweb/postfix
 - name: setup postfix on proxmox
 - hosts: proxmox_servers
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   roles:
-    - oefenweb.postfix
-  vars:
-    postfix_aliases:
-      - user: root
-        alias: discordalerts2023@ilude.com
-    postfix_relayhost: mailhog.ilude.com
-    postfix_relayhost_port: 1025
+    - role: oefenweb.postfix
+      vars:
+        postfix_aliases:
+          - user: root
+            alias: discordalerts2023@ilude.com
+        postfix_relayhost: mailhog.ilude.com
+        postfix_relayhost_port: 1025

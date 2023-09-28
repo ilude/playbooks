@@ -2,6 +2,7 @@
   hosts: rms_backup_servers
   become: yes
   gather_facts: no
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   tasks:
     - name: create /apps/logsprout directory
       become: yes

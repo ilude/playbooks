@@ -2,16 +2,12 @@
   hosts: "{{ ansible_override_hosts | default('all') }}"
   gather_facts: no
   become: yes
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   tasks:
     - name: set system hostname
       command: hostnamectl set-hostname {{ inventory_hostname | split('.') | first }}
-      # debug:
-      #   msg: "Host: {{ inventory_hostname | split('.') | first }}"
 
       # example
       # [consul_servers]
       # consul-1 ansible_ssh_host=192.168.31.105
-      #
-      # OR
-      # [consul_servers]
-      # consul.ilude.com
+
