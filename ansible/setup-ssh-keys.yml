@@ -12,7 +12,7 @@
         key: '{{ item }}'
       with_items: '{{ lookup("file", ssh_public_keys_file).splitlines() }}'
 
-    - set_fact: ssh_key_filename="id_ed25591"
+    - set_fact: ssh_key_filename="id_ed25519"
       when: ssh_key_filename is undefined
 
     - debug:
@@ -20,14 +20,14 @@
 
     - name: ensure id_ed25519 private key is present
       copy: 
-        src:  ~/.ssh/{{ ssh_key_filename }}
+        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         mode: 0600
         force: no
     
     - name: ensure id_ed25519 public key is present
       copy: 
-        src:  ~/.ssh/{{ ssh_key_filename }}.pub
+        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
         dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
         mode: 0644
         force: no
