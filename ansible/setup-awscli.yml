@@ -1,3 +1,4 @@
 - hosts: npi_cluster_test
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   roles:
     - ecgalaxy.aws_cli

@@ -1,6 +1,7 @@
 - name: sync rms
   hosts: rms_backup_servers
   gather_facts: no
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   tasks:
     - name: install dependencies
       become: yes

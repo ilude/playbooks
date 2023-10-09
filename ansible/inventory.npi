@@ -1,7 +1,5 @@
 [all:vars]
 ansible_user=anvil
-log_server=logs.rammount.com
-ssh_key_filename=id_ed25519_pve_deploy
 
 [pve_cluster_rome:vars]
 ansible_user=root
@@ -27,11 +25,16 @@ consul-2 ansible_ssh_host=192.168.31.106
 consul-3 ansible_ssh_host=192.168.31.107
 consul-4 ansible_ssh_host=192.168.31.108
 
+[tailscale_hosts]
+tailscale ansible_ssh_host=192.168.31.110
+
 [logging_servers]
 victor-sentry.rammount.com
 
 [harbor_servers]
 harbor-portland.rammount.com 
+harbor-seattle.rammount.com
+harbor-pharis.rammount.com
 
 [docker_hosts:children]
 consul_servers

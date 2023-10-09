@@ -1,0 +1,70 @@
+- name: setup user anvil
+  hosts: "{{ ansible_override_hosts | default('all') }}"
+  become: yes
+  gather_facts: no
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars:
+    - ssh_public_keys_file: "./keys/{{ lookup('env', 'SITE') }}-pub.keys.txt"
+  tasks:
+    - name: Add user anvil
+      user:
+        name: anvil
+        password: "{{ anvil_password }}"
+        shell: /bin/zsh
+        groups: adm,cdrom,sudo,dip,plugdev,lxd,docker
+
+    - name: Add user anvil to sudo
+      lineinfile:
+        path: /etc/sudoers.d/anvil
+        line: "anvil ALL=(ALL) NOPASSWD: ALL"
+        state: present
+        mode: 0440
+        create: yes
+        validate: 'visudo -cf %s'
+
+    - name: Set up multiple authorized keys
+      authorized_key:
+        user: 'anvil'
+        state: present
+        key: '{{ item }}'
+      with_items: '{{ lookup("file", ssh_public_keys_file).splitlines() }}'
+
+    - name: ensure id_ed25519 private key is present
+      copy: 
+        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+        dest: /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+        owner: anvil
+        group: anvil
+        mode: 0600
+        force: no
+    
+    - name: ensure id_ed25519 public key is present
+      copy: 
+        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+        dest: /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+        owner: anvil
+        group: anvil
+        mode: 0644
+        force: no
+
+    - name: create link to id_ed25519 private key
+      file:
+        src:    /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+        dest:   /home/anvil/.ssh/id_ed25519
+        owner: anvil
+        group: anvil
+        state:  link
+        mode:   0600
+
+    - name: create link to id_ed25519 public key
+      file:
+        src:    /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+        dest:   /home/anvil/.ssh/id_ed25519.pub
+        owner: anvil
+        group: anvil
+        state:  link
+        mode:   0644
+
+    
+    
+

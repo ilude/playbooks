@@ -6,6 +6,7 @@
   hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   tasks:
     - name: ensure github.com is a known host
       lineinfile:

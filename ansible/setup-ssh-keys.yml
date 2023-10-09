@@ -1,8 +1,7 @@
----
-- name: ensure id_ed25519 key is present on hosts
-  hosts: "{{ ansible_override_hosts | default('all') }}"
+- hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   vars:
     - ssh_public_keys_file: "./keys/{{ lookup('env', 'SITE') }}-pub.keys.txt"
   tasks:
@@ -21,14 +20,14 @@
 
     - name: ensure id_ed25519 private key is present
       copy: 
-        src:  ~/.ssh/{{ ssh_key_filename }}
+        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         mode: 0600
         force: no
     
     - name: ensure id_ed25519 public key is present
       copy: 
-        src:  ~/.ssh/{{ ssh_key_filename }}.pub
+        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
         dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
         mode: 0644
         force: no

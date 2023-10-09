@@ -2,6 +2,7 @@
 - name: setup sudoer.d file
   hosts: 192.168.50.229
   become: true
+  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   tasks:
   - name: Set includedir in sudoers
     lineinfile:
