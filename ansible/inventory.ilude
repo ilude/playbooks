@@ -1,12 +1,17 @@
 [all:vars]
 ansible_user=anvil
 
+
+[tailscale_hosts:vars]
+role=tailscale
+
 [tailscale_hosts]
-tailscale ansible_ssh_host=192.168.16.133
+tailscale ansible_ssh_host=192.168.16.133 time=night
+
 
 [docker_vms]
-onramp ansible_ssh_host=192.168.16.241
+patriot-onramp ansible_ssh_host=192.168.16.241
+rearden ansible_ssh_host=192.168.16.61
 
 [docker_hosts:children]
 docker_vms
-tailscale_hosts
