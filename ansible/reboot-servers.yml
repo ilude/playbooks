@@ -1,11 +1,12 @@
 - name: Check if restart is required
   hosts: "{{ ansible_override_hosts | default('all') }}"
+  become: yes
   gather_facts: no
   tasks:
     - name: Check that the reboot-requied exists
       stat:
         path: /var/run/reboot-required
       register: p
-    - debug:
-        msg: "Reboot required"
+    - name: reboot {{ inventory_hostname }}
+      command: reboot
       when: p.stat.exists

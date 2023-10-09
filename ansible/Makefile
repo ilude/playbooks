@@ -7,8 +7,6 @@ ifeq ($(SITE),)
     $(error Need a value for SITE, e.g., export SITE=value)
 endif
 
-
-
 export ANSIBLE_HOST_KEY_CHECKING=false
 
 PASSED_COMMAND := $(firstword $(MAKECMDGOALS))
