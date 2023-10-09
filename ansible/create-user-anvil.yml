@@ -11,7 +11,7 @@
         name: anvil
         password: "{{ anvil_password }}"
         shell: /bin/zsh
-        groups: adm,cdrom,sudo,dip,plugdev,lxd,docker
+        groups: adm,cdrom,sudo,dip,plugdev,lxd,docker,vagrant
 
     - name: Add user anvil to sudo
       lineinfile:
