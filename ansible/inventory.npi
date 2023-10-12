@@ -36,8 +36,16 @@ harbor-portland.rammount.com
 harbor-seattle.rammount.com
 harbor-pharis.rammount.com
 
+[registry_servers]
+victor-registry ansible_ssh_host=192.168.31.112
+
+[test_docker_image_servers]
+victor-registry ansible_ssh_host=192.168.31.111
+
 [docker_hosts:children]
 consul_servers
 harbor_servers
 logging_servers
+registry_servers
 rms_backup_servers
+test_docker_image_servers

@@ -3,13 +3,14 @@ ifneq (,$(wildcard /app/.devcontainer/.env))
     export
 endif
 
-ifeq ($(SITE),)
-    $(error Need a value for SITE, e.g., export SITE=value)
-endif
-
 export ANSIBLE_HOST_KEY_CHECKING=false
 
 PASSED_COMMAND := $(firstword $(MAKECMDGOALS))
+# NOUN := $(lastword $(MAKECMDGOALS))
+# SITE_NOUN := $(filter $(NOUN),$(SITES))
+
+# INVENTORY_FILES := $(wildcard inventory.*)
+# SITES := $(strip $(subst inventory., ,$(INVENTORY_FILES)))
 
 # set ANSIBLE_OVERRIDE_HOSTS to 2nd parameter passed to make
 export  
@@ -29,6 +30,14 @@ prereq: .ansible_vault_password
 
 .ansible_vault_password:
 	touch $@
+
+# site_check:
+# 	ifeq ($(SITE),)
+# 	$(error Need a value for SITE, e.g., export SITE=value)
+# 	endif	
+
+# site:	
+# 	export SITE=$(SITE_NOUN)
 
 inventory:
 	ansible-playbook -i inventory.$(SITE) update-known-hosts.yml --vault-password-file .ansible_vault_password
