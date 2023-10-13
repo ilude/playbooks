@@ -1,5 +1,6 @@
 
 .ansible_vault_password
+.prereqs
 
 # Local .terraform directories
 **/.terraform/*
