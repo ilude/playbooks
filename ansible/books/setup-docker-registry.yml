@@ -1,0 +1,41 @@
+- name: setup docker registry to {{ ansible_override_hosts | default('regitry_hosts') }}
+  hosts: "{{ ansible_override_hosts | default('regitry_hosts') }}" 
+  become: yes
+  gather_facts: no
+  vars_files: "./ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  tasks:
+    - name: create /apps/registry directory
+      become: yes
+      file:
+        path: /apps/registry
+        state: directory        
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0775
+        recurse: yes
+
+    - name: create registry docker-compose.yml file
+      template:
+        src: templates/registry-docker-compose.yml.j2
+        dest: /apps/registry/docker-compose.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0644
+      register: service_conf
+
+    - name: check if registry is running
+      shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep registry | grep running | wc -l
+      register: service_count
+
+    - name: start registry
+      shell: docker compose up -d
+      args:
+        chdir: /apps/registry
+      when: service_count.stdout == "0"
+
+    - name: restart registry
+      shell: docker compose restart
+      args:
+        chdir: /apps/registry
+      when: service_count.stdout == "1" and service_conf.changed
+
