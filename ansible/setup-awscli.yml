@@ -1,4 +1,4 @@
-- hosts: npi_cluster_test
+- hosts: "{{ ansible_override_hosts | default('aws_hosts') }}" 
   vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   roles:
     - ecgalaxy.aws_cli

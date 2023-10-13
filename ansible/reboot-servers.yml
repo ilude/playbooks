@@ -6,7 +6,10 @@
     - name: Check that the reboot-requied exists
       stat:
         path: /var/run/reboot-required
-      register: p
-    - name: reboot {{ inventory_hostname }}
-      command: reboot
-      when: p.stat.exists
+      register: reboot_required
+
+    - name: Reboot {{ inventory_hostname }} and wait for its return
+      ansible.builtin.reboot:
+        reboot_timeout: 3600
+      when: reboot_required.stat.exists
+            

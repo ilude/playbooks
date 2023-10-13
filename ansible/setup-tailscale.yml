@@ -1,19 +1,14 @@
 # ansible-playbook -i inventory setup-tailscale.yml
 # https://galaxy.ansible.com/artis3n/tailscale
-<<<<<<< HEAD
-- name: setup tailscale
-  hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}" 
-=======
 - hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}"
   vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
-  pre_tasks:
-    - name: enable ip forwarding
-      become: yes
-      shell: |
-        echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.d/99-tailscale.conf
-        echo 'net.ipv6.conf.all.forwarding = 1' | tee -a /etc/sysctl.d/99-tailscale.conf
-        sysctl -p /etc/sysctl.d/99-tailscale.conf
->>>>>>> origin/main
+  # pre_tasks:
+  #   - name: enable ip forwarding
+  #     become: yes
+  #     shell: |
+  #       echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.d/99-tailscale.conf
+  #       echo 'net.ipv6.conf.all.forwarding = 1' | tee -a /etc/sysctl.d/99-tailscale.conf
+  #       sysctl -p /etc/sysctl.d/99-tailscale.conf
   roles:
     - role: artis3n.tailscale
       vars:
@@ -26,6 +21,14 @@
       state: present
       reload: yes
       sysctl_set: true
+
+    - ansible.posix.sysctl:
+      name: net.ipv6.conf.all.forwarding
+      value: '1'
+      state: present
+      reload: yes
+      sysctl_set: true
+    
 
 
 # echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf

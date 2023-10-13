@@ -1,6 +1,6 @@
 ---
 - name: Ansible apt module 
-  hosts: all
+  hosts: "{{ ansible_override_hosts | default('all') }}"
   become: yes
   pre_tasks:
     - name: include env vars

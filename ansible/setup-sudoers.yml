@@ -1,6 +1,6 @@
 ---
 - name: setup sudoer.d file
-  hosts: 192.168.50.229
+  hosts: "{{ ansible_override_hosts | default('all') }}" 
   become: true
   vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
   tasks:

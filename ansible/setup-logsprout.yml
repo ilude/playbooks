@@ -1,5 +1,5 @@
 - name: setup logsprout to {{ log_server }}
-  hosts: rms_backup_servers
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
   become: yes
   gather_facts: no
   vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
@@ -27,15 +27,15 @@
       shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep logsprout | grep running | wc -l
       register: service_count
 
-    # - name: start logsprout
-    #   shell: docker compose up -d
-    #   args:
-    #     chdir: /apps/logsprout
-    #   when: service_count.stdout == "0"
+    - name: start logsprout
+      shell: docker compose up -d
+      args:
+        chdir: /apps/logsprout
+      when: service_count.stdout == "0"
 
-    # - name: restart logsprout
-    #   shell: docker compose restart
-    #   args:
-    #     chdir: /apps/logsprout
-    #   when: service_count.stdout == "1" and service_conf.changed
+    - name: restart logsprout
+      shell: docker compose restart
+      args:
+        chdir: /apps/logsprout
+      when: service_count.stdout == "1" and service_conf.changed
 

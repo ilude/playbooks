@@ -1,0 +1,16 @@
+- name: Check for available updates
+  hosts: "{{ ansible_override_hosts | default('all') }}"
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: running apt update
+      apt:
+       update_cache: yes
+
+    - name: running apt list --upgradable
+      command: apt list --upgradable
+      register: updates
+
+    - name: Show updates available
+      debug: var=updates.stdout_lines
+      when: updates.stdout_lines|length > 1

@@ -1,5 +1,5 @@
-- name: setup syslog forwarding to {{ log_server }}
-  hosts: rms_backup_servers
+- name: setup syslog forwarding to {{ log_server }} 
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}"
   become: yes
   gather_facts: no
   vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"

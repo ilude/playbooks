@@ -40,7 +40,11 @@ harbor-pharis.rammount.com
 victor-registry ansible_ssh_host=192.168.31.112
 
 [test_docker_image_servers]
-victor-registry ansible_ssh_host=192.168.31.111
+victor-hotel ansible_ssh_host=192.168.31.111
+
+[setup_servers:children]
+test_docker_image_servers
+registry_servers
 
 [docker_hosts:children]
 consul_servers
