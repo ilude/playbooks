@@ -3,7 +3,7 @@
 # https://galaxy.ansible.com/oefenweb/postfix
 - name: setup postfix on proxmox
 - hosts: "{{ ansible_override_hosts | default('postfix_hosts') }}" 
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   roles:
     - role: oefenweb.postfix
       vars:

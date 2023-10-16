@@ -1,7 +1,7 @@
 # ansible-playbook -i inventory setup-tailscale.yml
 # https://galaxy.ansible.com/artis3n/tailscale
 - hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}"
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   # pre_tasks:
   #   - name: enable ip forwarding
   #     become: yes

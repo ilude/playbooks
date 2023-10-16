@@ -2,10 +2,7 @@
 - name: Ansible apt module 
   hosts: "{{ ansible_override_hosts | default('all') }}"
   become: yes
-  pre_tasks:
-    - name: include env vars
-      include_vars: "vaults/{{ lookup('env', 'SITE') }}.yml"
-      tags: ["always"]
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
   - name: Creating /etc/apt/apt.conf.d/99-Phased-Updates
     copy:

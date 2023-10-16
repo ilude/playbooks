@@ -1,7 +1,7 @@
 - name: sync rms
   hosts: rms_backup_servers
   gather_facts: no
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
     - name: install dependencies
       become: yes

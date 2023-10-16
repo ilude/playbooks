@@ -2,7 +2,7 @@
   hosts: "{{ ansible_override_hosts | default('all') }}"
   gather_facts: no
   become: yes
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
     - name: set system hostname
       command: hostnamectl set-hostname {{ inventory_hostname | split('.') | first }}

@@ -2,7 +2,7 @@
 - name: Ansible apt module
   hosts: "{{ ansible_override_hosts | default('gluster_hosts') }}" 
   become: yes
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
   - name: Ansible apt to install multiple packages - GlusterFS
     register: updatesys

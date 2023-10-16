@@ -2,7 +2,7 @@
   hosts: "{{ ansible_override_hosts | default('all') }}"
   become: yes
   gather_facts: no
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   vars:
     - ssh_public_keys_file: "./keys/{{ lookup('env', 'SITE') }}-pub.keys.txt"
   tasks:

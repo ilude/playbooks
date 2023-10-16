@@ -2,7 +2,7 @@
   hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
   become: yes
   gather_facts: no
-  vars_files: "./ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
     - name: create /apps/logsprout directory
       become: yes

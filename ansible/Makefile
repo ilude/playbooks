@@ -20,7 +20,7 @@ ASSET_FILES = $(wildcard ansible-prereqs/*)
 EMPTY_TARGETS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(EMPTY_TARGETS):;@:)
 
-.PHONY: prereq inventory %.yml 
+.PHONY: inventory $(PASSED_COMMAND)
 .prereqs: .ansible_vault_password $(ASSET_DIRS) $(ASSET_FILES)
 	ansible-galaxy install -r ansible-prereqs/requirements.yml
 	pip install -r ansible-prereqs/requirements.txt

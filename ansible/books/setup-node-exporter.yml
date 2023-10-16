@@ -1,6 +1,6 @@
 ---
 - hosts: "{{ ansible_override_hosts | default('all') }}" 
   become: true
-  vars_files: "vaults/{{ lookup('env', 'SITE') }}.yml"
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   roles:
     - geerlingguy.node_exporter 

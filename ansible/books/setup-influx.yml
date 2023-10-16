@@ -1,0 +1,29 @@
+- name: setup influx to {{ log_server }}
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
+  become: yes
+  gather_facts: no
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  tasks:
+    - name: Clone a github repository
+      git:
+        repo: git@bitbucket.org:rammounts/influx.git
+        dest: /apps/
+        clone: yes
+        update: yes
+
+    - name: check if influx is running
+      shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep influx | grep running | wc -l
+      register: service_count
+
+    - name: start influx
+      shell: docker compose up -d
+      args:
+        chdir: /apps/influx
+      when: service_count.stdout == "0"
+
+    - name: restart influx
+      shell: docker compose restart
+      args:
+        chdir: /apps/influx
+      when: service_count.stdout == "1" and service_conf.changed
+
