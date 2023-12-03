@@ -15,3 +15,4 @@ ilude-tailscale ansible_ssh_host=192.168.16.168
 [docker_hosts]
 patriot-onramp ansible_ssh_host=192.168.16.241
 rearden ansible_ssh_host=192.168.16.61
+test ansible_ssh_host=192.168.16.144

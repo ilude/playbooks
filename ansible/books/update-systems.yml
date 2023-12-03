@@ -1,39 +1,155 @@
 ---
-- name: Ansible apt module 
+- name: Ansible apt module
   hosts: "{{ ansible_override_hosts | default('all') }}"
-  become: yes
+  become: true
   vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
-  - name: Creating /etc/apt/apt.conf.d/99-Phased-Updates
-    copy:
-      dest: "/etc/apt/apt.conf.d/99-Phased-Updates"
-      content: |
-        Update-Manager::Always-Include-Phased-Updates "1";
-        APT::Get::Always-Include-Phased-Updates "1";
+    - name: Creating /etc/apt/apt.conf.d/99-Phased-Updates
+      copy:
+        dest: "/etc/apt/apt.conf.d/99-Phased-Updates"
+        content: |
+          Update-Manager::Always-Include-Phased-Updates "1";
+          APT::Get::Always-Include-Phased-Updates "1";
 
-  - name: Update apt repo and cache on all Debian/Ubuntu boxes
-    apt: 
-      update_cache: yes
-      cache_valid_time: 3600
-  
-  - name: Full-Upgrade on servers
-    apt: 
-      upgrade: dist 
+    - name: Remove and purge packages
+      apt:
+        name:
+          - needrestart
+          - landscape-common
+        state: absent
+        purge: true
 
-  - name: Upgrade all Packages
-    register: updatesys
-    apt:
-      name: "*"
-      state: latest
+    - name: Install systemd-timesyncd package
+      apt:
+        name: 
+          - systemd-timesyncd
+        state: present
 
-  - name: Display the last line of the previous task to check the stats
-    debug:
-      msg:  "{{updatesys.stdout_lines|last}}"
+    - name: Set local RTC
+      command: timedatectl set-local-rtc 1
 
-  - name: Remove useless packages from the cache
-    apt:
-      autoclean: yes
+    - name: Enable NTP
+      command: timedatectl set-ntp true
 
-  - name: Remove dependencies that are no longer required
-    apt:
-      autoremove: yes
+    - name: Replace DEBIAN_FRONTEND in /etc/environment
+      ansible.builtin.replace:
+        path: /etc/environment
+        regexp: '^DEBIAN_FRONTEND=.*$'
+        replace: 'DEBIAN_FRONTEND=noninteractive'
+        backup: yes
+
+    - name: Disable motd-news.timer
+      systemd:
+        name: motd-news.timer
+        enabled: false
+        state: stopped
+
+    - name: Update /etc/default/motd-news
+      lineinfile:
+        path: /etc/default/motd-news
+        regexp: '^ENABLED=.*'
+        line: 'ENABLED=0'
+
+    - name: Remove /etc/legal
+      file:
+        path: /etc/legal
+        state: absent
+
+    - name: Disable unnecessary MOTD scripts
+      command: chmod -x /etc/update-motd.d/{{ item }}
+      loop:
+        - 10-help-text
+        - 80-livepatch
+        - 95-hwe-eol
+      when: ansible_local['file_exists']['/etc/update-motd.d/' + item].exists | default(false)
+
+    - name: Disable systemd-networkd-wait-online.service
+      systemd:
+        name: systemd-networkd-wait-online.service
+        enabled: false
+        masked: true
+        state: stopped
+
+    - name: Create /etc/systemd/system.conf.d/ directory
+      ansible.builtin.file:
+        path: /etc/systemd/system.conf.d/
+        state: directory
+        recurse: yes
+        mode: '0755'
+
+    - name: Create timeoutstopsec.conf file
+      lineinfile:
+        path: /etc/systemd/system.conf.d/timeoutstopsec.conf
+        line: |
+          [Manager]
+          # default wait time for services to stop during shutdown/reboot
+          # before systemd will kill it and move on
+          DefaultTimeoutStopSec=10s
+        create: yes
+        mode: '0644'
+
+    - name: Create update-system cron job
+      ansible.builtin.copy:
+        dest: /etc/cron.weekly/update-system
+        content: |
+          #!/bin/bash
+          /usr/bin/dpkg --configure -a
+          /usr/bin/apt-get update
+          /usr/bin/apt-get -qy dist-upgrade
+          /usr/bin/apt-get install -f
+          /usr/bin/apt-get clean
+          /usr/bin/apt-get -qy autoremove
+          if [ -f /var/run/reboot-required ]; then
+            sudo reboot
+          else
+            dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge
+            exit 0
+          fi
+        mode: '0755'
+
+    - name: Set default apt options
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/99local
+        content: |
+          APT::Install-Suggests "0";
+          APT::Install-Recommends "0";
+          Dpkg::Options {
+              "--force-confdef";
+              "--force-confold";
+          }
+        mode: '0644'
+
+    - name: Prevent installation of unwanted locales
+      ansible.builtin.copy:
+        dest: /etc/dpkg/dpkg.cfg.d/01_nolocales
+        content: |
+          path-exclude /usr/share/locale/*
+          path-include /usr/share/locale/en*
+        mode: '0644'
+
+    - name: Update apt repo and cache on all Debian/Ubuntu boxes
+      apt: 
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Full-Upgrade on servers
+      apt: 
+        upgrade: dist 
+
+    - name: Upgrade all Packages
+      register: updatesys
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Display the last line of the previous task to check the stats
+      debug:
+        msg:  "{{updatesys.stdout_lines|last}}"
+
+    - name: Remove useless packages from the cache
+      apt:
+        autoclean: true
+
+    - name: Remove dependencies that are no longer required
+      apt:
+        autoremove: true
