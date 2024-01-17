@@ -2,13 +2,22 @@
   hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
   gather_facts: no
   vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
-  tasks:      
+  tasks:
+    - name: create /apps directory
+      become: yes
+      file:
+        path: /apps
+        state: directory        
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0775
+        recurse: yes
+
     - name: Clone influx repository
       git:
         repo: git@bitbucket.org:rammounts/influx.git
         dest: /apps/influx
-        clone: yes
-        update: yes
+        update: no
         accept_hostkey: yes
 
     - name: check if influx is running

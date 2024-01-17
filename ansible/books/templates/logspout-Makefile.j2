@@ -1,0 +1,31 @@
+# lets try the new docker build system
+# https://docs.docker.com/develop/develop-images/build_enhancements/
+# https://www.docker.com/blog/faster-builds-in-compose-thanks-to-buildkit-support/
+export DOCKER_BUILDKIT := 1
+export COMPOSE_DOCKER_CLI_BUILD := 1
+
+# define docker-compose flags for environments
+development_FLAGS := 
+staging_FLAGS 		:= -f ./docker-compose.yml 
+production_FLAGS 	:= -f ./docker-compose.yml
+COMPOSE_COMMAND 	:= docker compose
+
+up: pull
+	$(COMPOSE_COMMAND) $(FLAGS) up --build --force-recreate --abort-on-container-exit --remove-orphans
+
+start: pull
+	$(COMPOSE_COMMAND) $(FLAGS) up -d
+
+down:
+	$(COMPOSE_COMMAND) $(FLAGS) down 
+
+restart: down start
+
+clean: 
+	$(COMPOSE_COMMAND) $(FLAGS) build --no-cache
+
+pull: 
+	$(COMPOSE_COMMAND) $(FLAGS) pull
+
+logs:
+	$(COMPOSE_COMMAND) $(FLAGS) logs -f

@@ -1,0 +1,50 @@
+- name: setup logspout to {{ log_server }}
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
+  become: yes
+  gather_facts: no
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  tasks:
+    - name: create /apps/logspout directory
+      become: yes
+      file:
+        path: /apps/logspout
+        state: directory        
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0775
+        recurse: yes
+
+    - name: create logspout docker-compose.yml file
+      template:
+        src: templates/logspout-docker-compose.yml.j2
+        dest: /apps/logspout/docker-compose.yml
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0644
+      register: service_conf
+
+    - name: create logspout Makefile file
+      template:
+        src: templates/logspout-Makefile.j2
+        dest: /apps/logspout/Makefile
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0644
+      register: service_conf
+
+    - name: check if logspout is running
+      shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep logspout | grep running | wc -l
+      register: service_count
+
+    - name: start logspout
+      shell: make start
+      args:
+        chdir: /apps/logspout
+      when: service_count.stdout == "0"
+
+    - name: restart logspout
+      shell: make restart
+      args:
+        chdir: /apps/logspout
+      when: service_count.stdout == "1" and service_conf.changed
+

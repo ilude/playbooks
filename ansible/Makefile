@@ -45,6 +45,6 @@ edit-vars:
 	EDITOR='nano' ansible-vault edit --vault-password-file .ansible_vault_password vaults/$(SITE).yml
 
 $(PASSED_COMMAND): .prereqs 
-	ansible-playbook -i ansible-sites/$(SITE)/inventory $@ $(ANSIBLE_OVERRIDE_HOSTS) --vault-password-file .ansible_vault_password
+	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) --vault-password-file .ansible_vault_password
 
 FORCE: ;

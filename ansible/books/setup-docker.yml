@@ -100,3 +100,13 @@
         name: vm.swappiness
         value: 1
         sysctl_file: /etc/sysctl.conf
+
+    - name: create /apps directory
+      become: yes
+      file:
+        path: /apps
+        state: directory        
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0775
+        recurse: yes
