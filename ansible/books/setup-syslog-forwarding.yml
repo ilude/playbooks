@@ -1,4 +1,4 @@
-- name: setup syslog forwarding to {{ log_server }} 
+- name: setup syslog forwarding on {{ ansible_override_hosts | default('docker_hosts') }} to {{ log_server }} 
   hosts: "{{ ansible_override_hosts | default('docker_hosts') }}"
   become: yes
   gather_facts: no

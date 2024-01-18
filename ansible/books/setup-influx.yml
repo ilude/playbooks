@@ -1,4 +1,4 @@
-- name: setup influx to {{ log_server }}
+- name: setup influx to {{ ansible_override_hosts | default('docker_hosts') }}
   hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
   gather_facts: no
   vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
@@ -17,8 +17,10 @@
       git:
         repo: git@bitbucket.org:rammounts/influx.git
         dest: /apps/influx
-        update: no
+        update: yes
+        force: yes
         accept_hostkey: yes
+      register: service_conf
 
     - name: check if influx is running
       shell: docker ps --format='table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.State{{'}}'}}' | grep influx | grep running | wc -l

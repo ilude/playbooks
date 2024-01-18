@@ -1,4 +1,4 @@
-- name: setup logspout to {{ log_server }}
+- name: setup logspout to {{ ansible_override_hosts | default('docker_hosts') }}
   hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
   become: yes
   gather_facts: no

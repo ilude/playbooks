@@ -1,0 +1,35 @@
+- name: sync pharis
+  hosts: pharis_backup_servers
+  gather_facts: no
+  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  tasks:
+    - name: install dependencies
+      become: yes
+      apt:
+        update_cache: yes
+        name:
+          - rsync
+          - dnsutils
+        state: present
+    
+    - name: create /apps directory
+      become: yes
+      file:
+        path: /apps
+        state: directory        
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: 0775
+
+    - known_hosts:
+        name: "{{ item }}"
+        key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
+        state: present
+      with_items:
+      - harbor-pharis.rammount.com
+      - bitbucket.org
+
+    - name: rsync from harbor-pharis.rammount.com
+      shell: rsync -chazP --stats --exclude 'uptime-kuma/etc' anvil@harbor-pharis.rammount.com:/apps/ /apps
+
+    

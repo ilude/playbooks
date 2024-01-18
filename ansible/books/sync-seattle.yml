@@ -1,5 +1,5 @@
-- name: sync rms
-  hosts: rms_backup_servers
+- name: sync seattle backups
+  hosts: seattle_backup_servers
   gather_facts: no
   vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
@@ -26,17 +26,9 @@
         key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
         state: present
       with_items:
-      - rms.rammount.com
+      - harbor-seattle.rammount.com
       - bitbucket.org
 
-    - name: rsync from rms.rammount.com
-      shell: rsync -chazP --stats --exclude '.erlang.cookie' vagrant@rms.rammount.com:/apps/ /apps
-
-    - include_tasks: sync-rms-start-service.yml 
-      # vars:
-      #   - item: "{{item}}"
-      with_items:
-        - influx
-        - rms-production
-        - vps-production
-
+    - name: rsync from harbor-seattle.rammount.com
+      shell: rsync -chazP --stats --exclude '.erlang.cookie' anvil@harbor-seattle.rammount.com:/apps/ /apps
+    

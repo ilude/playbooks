@@ -12,12 +12,15 @@ pve-remus.rammount.com
 pve-romulus.rammount.com
 pve-zeno.rammount.com
 
-[rms_backup_servers]
+[seattle_backup_servers]
 victor-newark.rammount.com
 victor-boston.rammount.com
 victor-philly.rammount.com
 victor-trenton.rammount.com
 harbor-portland.rammount.com
+
+[pharis_backup_servers]
+victor-evander ansible_ssh_host=192.168.30.35
 
 [consul_servers]
 consul-1 ansible_ssh_host=192.168.31.105
@@ -42,14 +45,9 @@ victor-registry ansible_ssh_host=192.168.31.112
 [test_docker_image_servers]
 victor-hotel ansible_ssh_host=192.168.31.111
 
-
 [setup_servers:children]
 test_docker_image_servers
 registry_servers
-
-[docker_servers]
-victor-evander ansible_ssh_host=192.168.30.35
-harbor-portland.rammount.com
 
 [docker_hosts:children]
 consul_servers
