@@ -21,6 +21,7 @@ harbor-portland.rammount.com
 
 [pharis_backup_servers]
 victor-evander ansible_ssh_host=192.168.30.35
+harbor-portland.rammount.com
 
 [consul_servers]
 consul-1 ansible_ssh_host=192.168.31.105
@@ -39,21 +40,27 @@ harbor-portland.rammount.com
 harbor-seattle.rammount.com
 harbor-pharis.rammount.com
 
+[victor_servers]
+victor-sentry.rammount.com
+victor-newark.rammount.com
+victor-boston.rammount.com
+victor-philly.rammount.com
+victor-trenton.rammount.com
+victor-evander ansible_ssh_host=192.168.30.35
+victor-hotel ansible_ssh_host=192.168.31.111
+
 [registry_servers]
 victor-registry ansible_ssh_host=192.168.31.112
 
-[test_docker_image_servers]
-victor-hotel ansible_ssh_host=192.168.31.111
-
-[setup_servers:children]
-test_docker_image_servers
-registry_servers
-
-[docker_hosts:children]
+[docker_servers:children]
 consul_servers
 harbor_servers
-logging_servers
+victor_servers
 registry_servers
-rms_backup_servers
-docker_servers
-test_docker_image_servers
+
+[influx_servers:children]
+harbor_servers
+victor_servers
+
+[influx_servers:vars]
+influx_branch=logspout

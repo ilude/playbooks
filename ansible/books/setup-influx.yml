@@ -20,6 +20,7 @@
         update: yes
         force: yes
         accept_hostkey: yes
+        version: "{{ influx_branch | default('master') }}"
       register: service_conf
 
     - name: check if influx is running
