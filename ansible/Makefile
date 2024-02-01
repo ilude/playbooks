@@ -44,6 +44,11 @@ encrypt:
 edit-vars:
 	EDITOR='nano' ansible-vault edit --vault-password-file .ansible_vault_password vaults/$(SITE).yml
 
+fix-ssh-perms:
+	sudo chown -R $(shell id -u):$(shell id -g) ~/.ssh
+	chmod 600 ~/.ssh/*
+	chmod 700 ~/.ssh
+
 $(PASSED_COMMAND): .prereqs 
 	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) --vault-password-file .ansible_vault_password
 
