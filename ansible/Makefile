@@ -50,6 +50,6 @@ fix-ssh-perms:
 	chmod 700 ~/.ssh
 
 $(PASSED_COMMAND): .prereqs 
-	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) --vault-password-file .ansible_vault_password
+	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) #--vault-password-file .ansible_vault_password
 
 FORCE: ;
