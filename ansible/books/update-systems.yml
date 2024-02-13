@@ -1,9 +1,6 @@
 ---
 - name: Ansible apt module
   hosts: "{{ ansible_override_hosts | default('all') }}"
-  become: true
   gather_facts: false
-  #vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   roles:
-    - setup-system
     - update-system

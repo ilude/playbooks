@@ -13,6 +13,7 @@
   git:
     repo: git@github.com:traefikturkey/onramp.git
     dest: /apps/onramp
+    clone: yes
     update: yes
     force: yes
     accept_hostkey: yes

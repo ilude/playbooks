@@ -56,7 +56,7 @@ fix-ssh-perms:
 role: .prereqs
 	ansible $(ANSIBLE_OVERRIDE_HOSTS) --inventory-file ansible-sites/$(SITE)/inventory  --playbook-dir books/ --module-name include_role --args name=$(ROLE_NAME)
 
-./books/$(PASSED_COMMAND).yml: .prereqs 
+$(PASSED_COMMAND): .prereqs 
 	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) #--vault-password-file .ansible_vault_password
 
 FORCE: ;

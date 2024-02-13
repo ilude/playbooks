@@ -1,0 +1,1 @@
+ssh_public_keys_file: "../ansible-sites/{{ lookup('env', 'SITE') }}/pub-keys.txt"

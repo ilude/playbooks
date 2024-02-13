@@ -1,36 +1,6 @@
----
-- name: run setup-ssh-keys playbook
-  import_playbook: setup-ssh-keys.yml
-
 - name: dotfiles module 
   hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
-  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
-  tasks:
-    - name: ensure github.com is a known host
-      lineinfile:
-        dest: ~/.ssh/known_hosts
-        create: yes
-        state: present
-        line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com 2>/dev/null') }}"
-        regexp: "^github\\.com"
-
-    - name: clone dotfiles repository
-      git:
-        repo: git@github.com:ilude/dotfiles.git
-        dest: ~/.dotfiles
-        clone: yes
-        update: yes
-
-    - name: install dotfiles
-      command: ~/.dotfiles/install
-
-    - name: create /apps directory
-      become: yes
-      file:
-        path: /apps
-        state: directory        
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: 0775
+  roles: 
+    - dotfiles
