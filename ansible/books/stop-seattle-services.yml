@@ -1,0 +1,40 @@
+- name: Stop seattle services
+  hosts: seattle_backup_servers
+  gather_facts: false
+  roles:
+    # - role: update-system
+    #   become: yes
+
+    - role: servicectl
+      vars: 
+        service_name: rms
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: rms
+        service_environment: staging
+        service_action: stop
+
+    - role: servicectl
+      vars: 
+        service_name: vps
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: vps
+        service_environment: staging
+        service_action: stop
+
+    - role: servicectl
+      vars: 
+        service_name: notification-service
+        service_environment: production
+        service_action: stop
+
+    - role: servicectl
+      vars: 
+        service_name: tac
+        service_environment: production
+        service_action: stop

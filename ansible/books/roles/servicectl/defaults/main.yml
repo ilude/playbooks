@@ -1,0 +1,2 @@
+service_environment: production
+service_action: restart

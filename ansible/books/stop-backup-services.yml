@@ -1,0 +1,94 @@
+- name: Stop seattle backup services
+  hosts: seattle_backup_servers
+  gather_facts: false
+  roles:
+    # - role: update-system
+    #   become: yes
+
+    - role: servicectl
+      vars: 
+        service_name: rms
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: rms
+        service_environment: staging
+        service_action: stop
+
+    - role: servicectl
+      vars: 
+        service_name: vps
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: vps
+        service_environment: staging
+        service_action: stop
+
+
+- name: Stop pharis backup services
+  hosts: pharis_backup_servers
+  gather_facts: false
+  roles:
+    - role: servicectl
+      vars: 
+        service_name: conx
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: conx
+        service_environment: staging
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: conx
+        service_environment: sandbox
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: payment
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: rma
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: rma
+        service_environment: staging
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: shopify-data-upload
+        service_environment: production
+        service_action: stop
+
+    - role: servicectl
+      vars: 
+        service_name: shopify-mount-builder
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: shopify-mount-builder
+        service_environment: staging
+        service_action: stop
+
+    - role: servicectl
+      vars: 
+        service_name: shopify
+        service_environment: production
+        service_action: stop
+    - role: servicectl
+      vars: 
+        service_name: shopify
+        service_environment: staging
+        service_action: stop
+    
+    
+

@@ -1,0 +1,26 @@
+---
+- name: Check if service path exists
+  stat:
+    path: "/apps/{{ service_name }}-{{ service_environment }}"
+  register: service_path_env
+  ignore_errors: true
+
+- name: Check if service path exists without environment
+  stat:
+    path: "/apps/{{ service_name }}"
+  register: service_path_no_env
+  ignore_errors: true
+
+- name: Set service_path variable based on existence of service path
+  set_fact:
+    service_path: "{{ '/apps/' + service_name + '-' + service_environment if service_path_env.stat.exists else '/apps/' + service_name }}"
+    service_stack_name: "{{ service_name + '-' + service_environment if service_path_env.stat.exists else service_name }}"
+  when: service_path_env.stat.exists or service_path_no_env.stat.exists
+
+- debug: 
+    msg: make {{ service_action }} {{ service_environment }} for {{ service_stack_name }} in {{ service_path }}
+
+# - name: "Running: make {{ service_action }} {{ service_environment }} for {{ service_name }}"
+#   shell: make {{ service_action }} {{ service_environment }}
+#   args:
+#     chdir: service_path
