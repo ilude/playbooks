@@ -1,0 +1,9 @@
+- name: Check if hostname is already set
+  command: hostname
+  register: current_hostname
+  ignore_errors: true
+
+- name: Set hostname if not set
+  hostname:
+    name: "{{ inventory_hostname | split('.') | first }}"
+  when: current_hostname.stdout == "" or current_hostname.stdout != inventory_hostname | split('.') | first 

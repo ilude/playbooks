@@ -1,0 +1,22 @@
+---
+- name: setup onramp
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
+  become: true
+  #vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  vars:
+    docker_edition: 'ce'
+    docker_package_state: present
+    docker_service_state: started
+    docker_service_enabled: true
+    docker_restart_handler_state: restarted
+    docker_install_compose_plugin: true
+    docker_compose_package: docker-compose-plugin
+    docker_compose_package_state: present
+    docker_users:
+    - "{{ ansible_env.SUDO_USER }}"
+  roles:
+    - setup-system
+    - update-system
+    - set-hostname
+    - geerlingguy.docker
+    - onramp

@@ -1,0 +1,25 @@
+---
+- name: create /apps directory
+  become: yes
+  file:
+    path: /apps
+    state: directory        
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0775
+    recurse: yes
+
+- name: Clone onramp repository
+  git:
+    repo: git@github.com:traefikturkey/onramp.git
+    dest: /apps/onramp
+    update: yes
+    force: yes
+    accept_hostkey: yes
+    version: "{{ onramp_branch | default('master') }}"
+  register: service_conf
+
+- name: make install
+  command: make install
+  args:
+    chdir: /apps/onramp

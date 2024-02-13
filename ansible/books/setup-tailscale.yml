@@ -3,6 +3,9 @@
 - hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}"
   #vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   roles:
+    - setup-system
+    - update-system
+
     # https://galaxy.ansible.com/artis3n/tailscale
     - role: artis3n.tailscale
       vars:

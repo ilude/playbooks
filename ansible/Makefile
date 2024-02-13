@@ -6,12 +6,16 @@ endif
 export ANSIBLE_HOST_KEY_CHECKING=false
 
 PASSED_COMMAND := $(firstword $(MAKECMDGOALS))
-
-# set ANSIBLE_OVERRIDE_HOSTS to 2nd parameter passed to make
-export  
-ifneq (,$(strip $(word 2,$(MAKECMDGOALS))))
+  
+ifeq (role, $(PASSED_COMMAND))
+	ANSIBLE_OVERRIDE_HOSTS := $(strip $(or $(word 3,$(MAKECMDGOALS)), localhost))
+	ROLE_NAME := $(strip $(word 2,$(MAKECMDGOALS)))
+else ifneq (,$(strip $(word 2,$(MAKECMDGOALS))))
+	# set ANSIBLE_OVERRIDE_HOSTS to 2nd parameter passed to make
 	ANSIBLE_OVERRIDE_HOSTS := --extra-vars "ansible_override_hosts=$(strip $(word 2,$(MAKECMDGOALS)))"
 endif
+
+export
 
 ASSET_DIRS = $(shell find ansible-prereqs/ -type d)
 ASSET_FILES = $(wildcard ansible-prereqs/*)
@@ -49,7 +53,10 @@ fix-ssh-perms:
 	chmod 600 ~/.ssh/*
 	chmod 700 ~/.ssh
 
-$(PASSED_COMMAND): .prereqs 
+role: .prereqs
+	ansible $(ANSIBLE_OVERRIDE_HOSTS) --inventory-file ansible-sites/$(SITE)/inventory  --playbook-dir books/ --module-name include_role --args name=$(ROLE_NAME)
+
+./books/$(PASSED_COMMAND).yml: .prereqs 
 	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) #--vault-password-file .ansible_vault_password
 
 FORCE: ;

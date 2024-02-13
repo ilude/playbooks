@@ -18,4 +18,3 @@ tailscale.ilude.com ansible_ssh_host=192.168.16.116 tailscale_hostname=ilude-vm
 patriot-onramp ansible_ssh_host=192.168.16.241
 rearden ansible_ssh_host=192.168.16.61
 nexus ansible_ssh_host=192.168.16.97
-test ansible_ssh_host=192.168.16.144

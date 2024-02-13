@@ -2,7 +2,7 @@
 - name: install docker and docker compose
   hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
   become: true
-  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  #vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   vars:
     docker_edition: 'ce'
     docker_package_state: present
@@ -15,7 +15,11 @@
     docker_users:
     - "{{ ansible_env.SUDO_USER }}"
   roles:
+    - setup-system
+    - update-system
+    - set-hostname
     - geerlingguy.docker
+
   tasks:
     - name: add a vm.overcommit_memory setting at the end of the sysctl.conf
       sysctl: name=vm.overcommit_memory value=1 state=present reload=yes
