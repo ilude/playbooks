@@ -5,6 +5,8 @@ endif
 
 export ANSIBLE_HOST_KEY_CHECKING=false
 
+export SITE := $(or $(SITE), ilude)
+
 PASSED_COMMAND := $(firstword $(MAKECMDGOALS))
   
 ifeq (role, $(PASSED_COMMAND))
