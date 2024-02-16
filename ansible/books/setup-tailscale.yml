@@ -10,7 +10,7 @@
     - role: artis3n.tailscale
       vars:
         tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
-        tailscale_args: " -advertise-exit-node  --advertise-routes={{ tailscale_routes }} --hostname={{ tailscale_hostname | default('tailscale-vm') }}"
+        tailscale_args: "--advertise-exit-node  --advertise-routes={{ tailscale_routes }} --hostname={{ tailscale_hostname | default('tailscale-vm') }}"
   tasks:
     - name: Set net.ipv4.ip_forward
       become: yes
