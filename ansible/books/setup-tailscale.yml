@@ -1,7 +1,6 @@
 ---
 - name: Setup Tailscale
-- hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}"
-  #vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
+  hosts: "{{ ansible_override_hosts | default('tailscale_hosts') }}"
   roles:
     - setup-system
     - update-system

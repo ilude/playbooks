@@ -2,7 +2,6 @@
 - name: setup sudoer.d file
   hosts: "{{ ansible_override_hosts | default('all') }}" 
   become: true
-  vars_files: "../ansible-sites/{{ lookup('env', 'SITE') }}/vault.yml"
   tasks:
   - name: Set includedir in sudoers
     lineinfile:

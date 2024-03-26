@@ -1,6 +1,3 @@
-- name: add a vm.overcommit_memory setting at the end of the sysctl.conf
-  sysctl: name=vm.overcommit_memory value=1 state=present reload=yes
-
 - name: Create docker-prune cron job
   become: true
   ansible.builtin.copy:
@@ -54,46 +51,43 @@
   systemd:
     daemon_reload: true
 
-- name: Set kernel.printk
-  become: true
-  command: echo "3 4 1 3" | tee /proc/sys/kernel/printk
-
-- name: Configure kernel.printk in sysctl.conf
-  become: true
-  ansible.builtin.replace:
-    path: /etc/sysctl.conf
-    regexp: '^kernel.printk.*$'
-    replace: 'kernel.printk = 3 4 1 3'
+# https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc
+- name: Set fs.inotify.max_user_watches
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: '524288'
+    sysctl_file: /etc/sysctl.conf
 
 - name: Set vm.overcommit_memory
   become: true
   sysctl:
     name: vm.overcommit_memory
-    value: 1
+    value: '1'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set net.core.somaxconn
   become: true
   sysctl:
     name: net.core.somaxconn
-    value: 1024
+    value: '1024'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set vm.max_map_count
   become: true
   sysctl:
     name: vm.max_map_count
-    value: 262144
+    value: '262144'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set vm.swappiness
   become: true
   sysctl:
     name: vm.swappiness
-    value: 1
+    value: '1'
     sysctl_file: /etc/sysctl.conf
 
 - name: create /apps directory
+  become: true
   file:
     path: /apps
     state: directory        

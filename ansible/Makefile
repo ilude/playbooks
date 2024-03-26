@@ -28,7 +28,7 @@ $(eval $(EMPTY_TARGETS):;@:)
 
 .PHONY: inventory $(PASSED_COMMAND)
 .prereqs: .ansible_vault_password $(ASSET_DIRS) $(ASSET_FILES)
-	ansible-galaxy install -r ansible-prereqs/requirements.yml
+	ansible-galaxy install -f -r ansible-prereqs/requirements.yml
 	pip install -r ansible-prereqs/requirements.txt
 	touch $@
 
@@ -36,19 +36,19 @@ $(eval $(EMPTY_TARGETS):;@:)
 	touch $@
 
 inventory: .ansible_vault_password 
-	ansible-playbook -i ansible-sites/$(SITE)/inventory update-known-hosts.yml --vault-password-file .ansible_vault_password
+	ansible-playbook -i ./ansible-sites/$(SITE)/inventory ./books/update-known-hosts.yml --vault-password-file .ansible_vault_password
 
 echo:
 	env|sort
 
 sudo: prereq
-	ansible-playbook -i ansible-sites/$(SITE)/inventory --ask-become-pass setup-sudoers.yml --vault-password-file .ansible_vault_password
+	ansible-playbook -i ./ansible-sites/$(SITE)/inventory --ask-become-pass ./books/setup-sudoers.yml --vault-password-file .ansible_vault_password
 
 encrypt:
-	ansible-vault encrypt --vault-password-file .ansible_vault_password vaults/$(SITE).yml
+	ansible-vault encrypt --vault-password-file .ansible_vault_password ./ansible-sites/$(SITE)/vault.yml
 
 edit-vars:
-	EDITOR='nano' ansible-vault edit --vault-password-file .ansible_vault_password vaults/$(SITE).yml
+	EDITOR='nano' ansible-vault edit --vault-password-file .ansible_vault_password ./ansible-sites/$(SITE)/vault.yml
 
 fix-ssh-perms:
 	sudo chown -R $(shell id -u):$(shell id -g) ~/.ssh
@@ -56,9 +56,10 @@ fix-ssh-perms:
 	chmod 700 ~/.ssh
 
 role: .prereqs
-	ansible $(ANSIBLE_OVERRIDE_HOSTS) --inventory-file ansible-sites/$(SITE)/inventory  --playbook-dir books/ --module-name include_role --args name=$(ROLE_NAME)
+	ansible $(ANSIBLE_OVERRIDE_HOSTS) --inventory-file ./ansible-sites/$(SITE)/inventory  --playbook-dir books/ --module-name include_role --args name=$(ROLE_NAME)
 
 $(PASSED_COMMAND): .prereqs 
-	ansible-playbook -i ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) #--vault-password-file .ansible_vault_password
+	ansible-playbook -i ./ansible-sites/$(SITE)/inventory ./books/$@.yml $(ANSIBLE_OVERRIDE_HOSTS) 
+# -vvv  --vault-password-file .ansible_vault_password
 
 FORCE: ;

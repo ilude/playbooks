@@ -2,7 +2,6 @@
 ansible_user=anvil
 tailscale_routes=192.168.16.0/24
 
-
 [pve_hosts:vars]
 ansible_user=root
 
@@ -10,11 +9,15 @@ ansible_user=root
 pve.ilude.com
 pve-patriot.ilude.com
 
-[tailscale_hosts]
-tailscale.traefikturkey.icu ansible_ssh_host=192.168.16.173 tailscale_hostname=ilude-traefikturkey-vm
+[ilude_tailscale_hosts]
 tailscale.ilude.com ansible_ssh_host=192.168.16.116 tailscale_hostname=ilude-vm
+
+[traefikturkey_tailscale_hosts]
+tailscale.traefikturkey.icu ansible_ssh_host=192.168.16.173 tailscale_hostname=ilude-traefikturkey-vm
 
 [docker_hosts]
 patriot-onramp ansible_ssh_host=192.168.16.241
 rearden ansible_ssh_host=192.168.16.61
 nexus ansible_ssh_host=192.168.16.97
+mafen-playground ansible_ssh_host=192.168.16.228
+games ansible_ssh_host=192.168.16.219

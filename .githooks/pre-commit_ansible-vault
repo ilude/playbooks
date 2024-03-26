@@ -24,7 +24,10 @@ is_encrypted() {
   fi
 }
 
-echo "Running pre-commit checks..."
+echo "Running pre-commit ansible vault checks..."
 git diff --cached --name-only | grep -E "${FILE_PATTERN}" | while IFS= read -r line; do
   is_encrypted "${line}"
 done
+
+echo "Running pre-commit yamllint checks..."
+yamllint -c .yamllint .
