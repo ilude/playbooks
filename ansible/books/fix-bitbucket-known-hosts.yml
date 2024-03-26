@@ -4,11 +4,11 @@
 - name: fix bitbucket known hosts entry
   hosts: all
   tasks:
-  - name: check for known hosts file 
-    stat:
-      path: "~/.ssh/known_hosts"
-    register: known_hosts
+    - name: check for known hosts file 
+      stat:
+        path: "~/.ssh/known_hosts"
+      register: known_hosts
 
-  - name: fix bitbucket known hosts entry
-    shell: "ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts"
-    when: known_hosts.stat.exists
+    - name: fix bitbucket known hosts entry
+      shell: "ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts"
+      when: known_hosts.stat.exists

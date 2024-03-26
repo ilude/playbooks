@@ -38,4 +38,3 @@
       args:
         chdir: /apps/influx
       when: service_count.stdout == "1" and service_conf.changed
-

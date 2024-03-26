@@ -26,8 +26,8 @@
         key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
         state: present
       with_items:
-      - harbor-pharis.rammount.com
-      - bitbucket.org
+        - harbor-pharis.rammount.com
+        - bitbucket.org
 
     - name: rsync from harbor-pharis.rammount.com
       shell: rsync -chazP --stats --exclude 'uptime-kuma/etc' anvil@harbor-pharis.rammount.com:/apps/ /apps

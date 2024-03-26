@@ -5,7 +5,7 @@
   tasks:
     - name: running apt update
       apt:
-       update_cache: yes
+        update_cache: yes
 
     - name: running apt list --upgradable
       command: apt list --upgradable

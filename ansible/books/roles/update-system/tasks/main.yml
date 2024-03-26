@@ -3,21 +3,21 @@
   register: is_proxmox
 
 - block:
-  - name: Update apt repo and do a full-upgrade on servers
-    apt:
-      update_cache: true
-      cache_valid_time: 3600
-      upgrade: full 
-    register: updatesys
+    - name: Update apt repo and do a full-upgrade on servers
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+        upgrade: full 
+      register: updatesys
 
-  - name: Display the last line of the previous task to check the stats
-    debug:
-      msg:  "{{updatesys.stdout_lines|last}}"
+    - name: Display the last line of the previous task to check the stats
+      debug:
+        msg: "{{updatesys.stdout_lines|last}}"
 
-  - name: clean up after apt
-    apt:
-      autoremove: true
-      autoclean: true
+    - name: clean up after apt
+      apt:
+        autoremove: true
+        autoclean: true
   become: "{{is_proxmox.stdout == '0'}}"
 
 - name: update certs on proxmox servers

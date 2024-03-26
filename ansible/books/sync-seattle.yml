@@ -26,8 +26,8 @@
         key: "{{ lookup('pipe', 'ssh-keyscan {{ item }},`dig +short {{ item }}`') }}"
         state: present
       with_items:
-      - harbor-seattle.rammount.com
-      - bitbucket.org
+        - harbor-seattle.rammount.com
+        - bitbucket.org
 
     - name: rsync from harbor-seattle.rammount.com
       shell: rsync -chazP --stats --exclude '.erlang.cookie' anvil@harbor-seattle.rammount.com:/apps/ /apps

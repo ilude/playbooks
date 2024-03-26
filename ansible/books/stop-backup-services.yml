@@ -89,6 +89,3 @@
         service_name: shopify
         service_environment: staging
         service_action: stop
-    
-    
-

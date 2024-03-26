@@ -31,7 +31,7 @@
 
     - name: ensure id_ed25519 private key is present
       copy: 
-        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+        src: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         dest: /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         owner: anvil
         group: anvil
@@ -40,7 +40,7 @@
     
     - name: ensure id_ed25519 public key is present
       copy: 
-        src:  ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+        src: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
         dest: /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
         owner: anvil
         group: anvil
@@ -49,22 +49,18 @@
 
     - name: create link to id_ed25519 private key
       file:
-        src:    /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
-        dest:   /home/anvil/.ssh/id_ed25519
+        src: /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+        dest: /home/anvil/.ssh/id_ed25519
         owner: anvil
         group: anvil
-        state:  link
-        mode:   0600
+        state: link
+        mode: 0600
 
     - name: create link to id_ed25519 public key
       file:
-        src:    /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
-        dest:   /home/anvil/.ssh/id_ed25519.pub
+        src: /home/anvil/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+        dest: /home/anvil/.ssh/id_ed25519.pub
         owner: anvil
         group: anvil
-        state:  link
-        mode:   0644
-
-    
-    
-
+        state: link
+        mode: 0644

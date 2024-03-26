@@ -7,4 +7,4 @@ docker_install_compose_plugin: true
 docker_compose_package: docker-compose-plugin
 docker_compose_package_state: present
 docker_users:
-- "{{ ansible_env.SUDO_USER }}"
+  - "{{ ansible_env.SUDO_USER }}"

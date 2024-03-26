@@ -47,4 +47,3 @@
       args:
         chdir: /apps/logspout
       when: service_count.stdout == "1" and service_conf.changed
-
