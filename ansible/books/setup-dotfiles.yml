@@ -1,4 +1,4 @@
-- name: dotfiles module
+- name: Dotfiles module
   hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
