@@ -15,9 +15,12 @@ tailscale.ilude.com ansible_ssh_host=192.168.16.116 tailscale_hostname=ilude-vm
 [traefikturkey_tailscale_hosts]
 tailscale.traefikturkey.icu ansible_ssh_host=192.168.16.173 tailscale_hostname=ilude-traefikturkey-vm
 
-[docker_hosts]
+[mafen]
+mafens-playground ansible_ssh_host=192.168.16.228
 patriot-onramp ansible_ssh_host=192.168.16.241
+
+[docker_hosts]
 rearden ansible_ssh_host=192.168.16.61
 nexus ansible_ssh_host=192.168.16.97
-mafen-playground ansible_ssh_host=192.168.16.228
 games ansible_ssh_host=192.168.16.219
+agpm-dev ansible_ssh_host=192.168.16.162

@@ -46,52 +46,53 @@
     enabled: true
     state: started
 
-- name: Reload systemd
-  become: true
-  systemd:
-    daemon_reload: true
-
 # https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc
 - name: Set fs.inotify.max_user_watches
-  sysctl:
+  become: true
+  ansible.posix.sysctl:
     name: fs.inotify.max_user_watches
     value: '524288'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set vm.overcommit_memory
   become: true
-  sysctl:
+  ansible.posix.sysctl:
     name: vm.overcommit_memory
     value: '1'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set net.core.somaxconn
   become: true
-  sysctl:
+  ansible.posix.sysctl:
     name: net.core.somaxconn
     value: '1024'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set vm.max_map_count
   become: true
-  sysctl:
+  ansible.posix.sysctl:
     name: vm.max_map_count
     value: '262144'
     sysctl_file: /etc/sysctl.conf
 
 - name: Set vm.swappiness
   become: true
-  sysctl:
+  ansible.posix.sysctl:
     name: vm.swappiness
     value: '1'
     sysctl_file: /etc/sysctl.conf
 
-- name: create /apps directory
+- name: Create /apps directory
   become: true
   file:
     path: /apps
-    state: directory        
+    state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: 0775
     recurse: true
+
+- name: Reload systemd
+  become: true
+  systemd:
+    daemon_reload: true

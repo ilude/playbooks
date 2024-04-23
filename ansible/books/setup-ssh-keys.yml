@@ -1,4 +1,5 @@
-- hosts: "{{ ansible_override_hosts | default('all') }}"
+- name: Setup ssh keys
+  hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
   vars:
@@ -11,24 +12,26 @@
         key: '{{ item }}'
       with_items: '{{ lookup("file", ssh_public_keys_file).splitlines() }}'
 
-    - set_fact: ssh_key_filename="id_ed25519"
+    - name: Set ssh_key_filename
+      set_fact: ssh_key_filename="id_ed25519"
       when: ssh_key_filename is undefined
 
-    - debug:
+    - name: show ssh_key_filename
+      debug:
         msg: "ssh_key_filename: {{ ssh_key_filename }}"
 
-    - name: ensure id_ed25519 private key is present
+    - name: Ensure id_ed25519 private key is present
       copy: 
         src: ~/.ssh/{{ ssh_key_filename }}
         dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
-        mode: 0600
+        mode: 600
         force: yes
 
-    - name: ensure id_ed25519 public key is present
+    - name: Ensure id_ed25519 public key is present
       copy: 
         src: ~/.ssh/{{ ssh_key_filename }}.pub
         dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
-        mode: 0644
+        mode: 644
         force: yes
 
     - name: Check if private key exists
@@ -43,13 +46,13 @@
         dest: "~/.ssh/id_ed25519.orig"
       when: priv_key_result.stat.exists and not priv_key_result.stat.islnk is defined
 
-    - name: create link to id_ed25519 private key
+    - name: Create link to id_ed25519 private key
       file:
         src: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
         dest: ~/.ssh/id_ed25519
         state: link
         force: true
-        mode: 0600
+        mode: 600
 
     - name: Check if public key exists
       stat:
@@ -69,6 +72,5 @@
         dest: ~/.ssh/id_ed25519.pub
         state: link
         force: true
-        mode: 0644
-      
+        mode: 644
       

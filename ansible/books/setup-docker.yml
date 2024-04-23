@@ -1,7 +1,8 @@
 ---
-- name: install docker and docker compose
-  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
+- name: Install docker and docker compose
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}"
   roles:
     - update-system
+    - ssh-keys
     - dotfiles
     - docker
