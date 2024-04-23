@@ -1,7 +1,7 @@
-- name: dotfiles module 
+- name: dotfiles module
   hosts: "{{ ansible_override_hosts | default('all') }}"
   become: no
   gather_facts: no
-  roles: 
+  roles:
     - ssh-keys
     - dotfiles

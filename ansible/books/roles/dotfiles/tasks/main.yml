@@ -1,4 +1,4 @@
-- name: ensure github.com is a known host
+- name: Ensure github.com is a known host
   lineinfile:
     dest: ~/.ssh/known_hosts
     create: yes
@@ -6,12 +6,12 @@
     line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com 2>/dev/null') }}"
     regexp: "^github\\.com"
 
-- name: clone dotfiles repository
+- name: Clone dotfiles repository
   git:
     repo: git@github.com:ilude/dotfiles.git
     dest: ~/.dotfiles
     clone: yes
     update: yes
 
-- name: install dotfiles
+- name: Install dotfiles
   command: ~/.dotfiles/install

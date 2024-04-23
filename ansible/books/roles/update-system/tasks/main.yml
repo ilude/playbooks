@@ -1,4 +1,4 @@
-- name: check if server is proxmox server
+- name: Check if server is proxmox server
   shell: pveversion --verbose | grep proxmox-ve | wc -l
   register: is_proxmox
 
@@ -7,19 +7,19 @@
       apt:
         update_cache: true
         cache_valid_time: 3600
-        upgrade: full 
+        upgrade: full
       register: updatesys
 
     - name: Display the last line of the previous task to check the stats
       debug:
-        msg: "{{updatesys.stdout_lines|last}}"
+        msg: "{{ updatesys.stdout_lines | last }}"
 
-    - name: clean up after apt
+    - name: Clean up after apt
       apt:
         autoremove: true
         autoclean: true
-  become: "{{is_proxmox.stdout == '0'}}"
+  become: "{{ is_proxmox.stdout == '0' }}"
 
-- name: update certs on proxmox servers
-  shell: pvecm updatecerts
+- name: Update certs on proxmox servers
+  command: pvecm updatecerts
   when: is_proxmox.stdout == "1"
