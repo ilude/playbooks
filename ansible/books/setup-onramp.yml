@@ -1,5 +1,5 @@
 ---
-- name: setup onramp
-  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}" 
+- name: Setup onramp
+  hosts: "{{ ansible_override_hosts | default('docker_hosts') }}"
   roles:
     - onramp

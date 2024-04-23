@@ -1,9 +1,9 @@
 ---
-- name: create /apps directory
+- name: Create /apps directory
   become: yes
   file:
     path: /apps
-    state: directory        
+    state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: 0775
@@ -20,7 +20,7 @@
     version: "{{ onramp_branch | default('master') }}"
   register: service_conf
 
-- name: make install
+- name: Make install
   command: make install
   args:
     chdir: /apps/onramp
