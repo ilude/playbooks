@@ -1,5 +1,5 @@
 - name: Set up multiple authorized keys
-  authorized_key:
+  ansible.posix.authorized_key:
     user: '{{ ansible_user }}'
     state: present
     key: '{{ item }}'
@@ -11,17 +11,17 @@
 - debug:
     msg: "ssh_key_filename: {{ ssh_key_filename }}"
 
-- name: ensure id_ed25519 private key is present
-  copy: 
-    src: ~/.ssh/{{ ssh_key_filename }}
-    dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+- name: Ensure id_ed25519 private key is present
+  copy:
+    src: ~/.ssh/id_ed25519_github
+    dest: ~/.ssh/id_ed25519_github
     mode: 0600
     force: yes
 
-- name: ensure id_ed25519 public key is present
-  copy: 
-    src: ~/.ssh/{{ ssh_key_filename }}.pub
-    dest: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+- name: Ensure id_ed25519 public key is present
+  copy:
+    src: ~/.ssh/id_ed25519_github.pub
+    dest: ~/.ssh/id_ed25519_github.pub
     mode: 0644
     force: yes
 
@@ -37,9 +37,9 @@
     dest: "~/.ssh/id_ed25519.orig"
   when: priv_key_result.stat.exists and not priv_key_result.stat.islnk is defined
 
-- name: create link to id_ed25519 private key
+- name: Create link to id_ed25519 private key
   file:
-    src: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}
+    src: ~/.ssh/id_ed25519_github
     dest: ~/.ssh/id_ed25519
     state: link
     force: true
@@ -59,7 +59,7 @@
 
 - name: create link to id_ed25519 public key
   file:
-    src: ~/.ssh/id_ed25519_{{ lookup('env', 'SITE') }}.pub
+    src: ~/.ssh/id_ed25519_github.pub
     dest: ~/.ssh/id_ed25519.pub
     state: link
     force: true

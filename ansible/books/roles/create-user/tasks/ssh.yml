@@ -1,0 +1,31 @@
+- name: Fetching {{ github_account }}.keys for {{ user_name }}
+  uri:
+    url: "{{ github_account }}.keys"
+    return_content: yes
+  register: github_keys
+
+- name: Save github public keys
+  ansible.posix.authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ item }}"
+  with_items: "{{ github_keys.content.split('\n') }}"
+
+
+- name: Fix permissions for ~/.ssh directory
+  file:
+    path: "/home/{{ user_name }}/.ssh"
+    mode: 0700
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    state: directory
+
+- name: Fix permissions for other files in ~/.ssh
+  file:
+    path: "/home/{{ user_name }}/.ssh/{{ item }}"
+    mode: 0600
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    state: file
+  with_fileglob:
+    - "/home/{{ user_name }}/.ssh/*"
+  when: item is file

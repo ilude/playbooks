@@ -1,0 +1,9 @@
+user_name: anvil
+user_comment: "Anvil User"
+user_groups: "sudo,docker"
+user_home: "/home/{{ user_name }}"
+user_shell: "/bin/zsh"
+github_user: "{{ user_name | default('ilude') }}"
+github_account: "https://github.com/{{ github_user }}"
+dotfiles_repo: "{{ github_account }}/dotfiles"
+allow_sudo: true

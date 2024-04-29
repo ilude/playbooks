@@ -1,0 +1,29 @@
+- name: Check if dotfiles repo {{ dotfiles_repo }} exists
+  uri:
+    url: "{{ dotfiles_repo }}"
+    return_content: no
+  register: dotfiles_repo_check
+  ignore_errors: true
+
+- name: Cloning {{ dotfiles_repo }} to ~/.dotfiles
+  git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ user_home }}/.dotfiles"
+    recursive: yes  # Recursively clone submodules
+    update: yes
+    force: yes
+    accept_hostkey: yes
+  when: dotfiles_repo_check.status == 200
+
+- name: Fix permissions for ~/.dotfiles
+  shell: "chown -R {{ user_name}}:{{ user_name}} {{ user_home }}/.dotfiles"
+
+- name: Checking for Dotbot install script in {{ user_home }}/.dotfiles/install
+  stat:
+    path: "{{ user_home }}/.dotfiles/install"
+  register: install_script
+  when: dotfiles_repo_check.status == 200
+
+- name: Running Dotbot install script
+  shell: "sudo -u {{ user_name }} -i {{ user_home }}/.dotfiles/install"
+  when: dotfiles_repo_check.status == 200 and install_script.stat.exists

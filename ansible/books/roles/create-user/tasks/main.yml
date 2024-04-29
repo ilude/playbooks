@@ -1,0 +1,21 @@
+- name: Create new user {{ user_name }}
+  user:
+    name: "{{ user_name }}"
+    comment: "{{ user_comment }}"
+    groups: "{{ user_groups }}"
+    shell: "{{ user_shell | default('/bin/bash') }}"
+    home: "{{ user_home }}"
+
+- name: Allow user {{ user_name }} to sudo
+  lineinfile:
+    path: /etc/sudoers.d/{{ user_name }}
+    line: "{{ user_name }} ALL=(ALL) NOPASSWD: ALL"
+    state: present
+    mode: 0440
+    create: yes
+    validate: 'visudo -cf %s'
+  become: true
+  when: allow_sudo
+
+- include_tasks: ssh.yml
+- include_tasks: dotbot-dotfiles.yml
