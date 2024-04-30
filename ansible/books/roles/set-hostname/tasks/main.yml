@@ -2,3 +2,37 @@
   hostname:
     name: "{{ inventory_hostname | split('.') | first }}"
   become: true
+
+- name: Check if cloud-init is installed
+  command: dpkg-query -W -f='${Status}' cloud-init
+  register: cloud_init_status
+  ignore_errors: true
+  become: true
+
+- block:
+    - name: Find cloud.cfg and files in cloud.cfg.d
+      ansible.builtin.find:
+        paths:
+          - /etc/cloud
+          - /var/lib/cloud/instance
+        patterns:
+          - 'cloud.cfg'
+          - 'cloud.cfg.d/*.cfg'
+          - 'cloud-config.txt'
+          - 'user-data.txt'
+      register: cloud_files
+      become: true
+
+    - name: Get manage_etc_hosts value from cloud-init files
+      ansible.builtin.shell:
+        cmd: "grep '^manage_etc_hosts: true$' '{{ item.path }}'"
+      register: manage_etc_hosts_cloud_files
+      loop: "{{ cloud_files.files }}"
+      ignore_errors: true
+      become: true
+
+    - name: Rerun cloud-init if installed and manage_etc_hosts is true
+      ansible.builtin.command: cloud-init init
+      become: true
+      when: cloud_init_status.stdout | regex_search('installed') and (manage_etc_hosts_cloud_files.results | selectattr('stdout', 'defined') | list | length > 0)
+  when: cloud_init_status.stdout | regex_search('installed')

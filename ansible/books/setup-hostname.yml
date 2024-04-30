@@ -1,0 +1,4 @@
+- name: Set hostname
+  hosts: "{{ ansible_override_hosts | default('all') }}"
+  roles:
+    - set-hostname

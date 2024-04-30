@@ -24,3 +24,4 @@ rearden ansible_ssh_host=192.168.16.61
 nexus ansible_ssh_host=192.168.16.97
 games ansible_ssh_host=192.168.16.219
 agpm-dev ansible_ssh_host=192.168.16.162
+iludes-playground ansible_ssh_host=192.168.16.123
